@@ -86,13 +86,12 @@ app.get("/", (req, res) => {
   res.render("home.ejs");
 });
 
-app.get("/register", async (req, res) => {
-  let fakeUser = new User({
-    email: "xyz@email.com",
-    username: "xy_z",
-  });
-  let registeredUser = await User.register(fakeUser, "ssup_gang");
-  res.send(registeredUser);
+app.get("/privacy", (req, res) => {
+  res.render("privacy.ejs");
+});
+
+app.get("/terms", (req, res) => {
+  res.render("terms.ejs");
 });
 
 app.use("/listings", listingRouter);
@@ -108,7 +107,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("./listings/error.ejs", { message });
 });
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`server listening on port ${port}`);
 });

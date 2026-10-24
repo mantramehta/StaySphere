@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node init/index.js"
+    "seed": "node init/index.js",
+    "seed:add": "node init/addListings.js"
   },
   "keywords": [],
   "author": "Mantra Mehta",
