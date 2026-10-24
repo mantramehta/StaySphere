@@ -1,0 +1,18 @@
+# Environment variables and secrets
+.env
+
+# Installed dependencies
+node_modules/
+
+# Log files
+debug.log
+*.log
+
+# VS Code workspace settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+.prettierrc.json

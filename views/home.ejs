@@ -1,0 +1,61 @@
+<% layout("/layouts/boilerplate") %>
+
+<main class="home-page">
+  <section class="home-hero">
+    <div class="home-content">
+      <p class="home-label">Find your next stay</p>
+      <h1>Beautiful places.<br />Unforgettable stays.</h1>
+      <p class="home-description">
+        Discover handpicked homes, unique escapes, and memorable destinations
+        from around the world.
+      </p>
+      <div class="home-actions">
+        <a href="/listings" class="home-primary-btn">Explore stays</a>
+        <% if (!currUser) { %>
+        <a href="/signup" class="home-secondary-btn">Join StaySphere</a>
+        <% } else { %>
+        <a href="/listings/new" class="home-secondary-btn">Host your place</a>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="home-image-wrap">
+      <img
+        src="https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?auto=format&fit=crop&w=1200&q=80"
+        class="home-image"
+        alt="Beautiful vacation home overlooking the sea"
+      />
+      <div class="home-image-card">
+        <i class="fa-solid fa-location-dot"></i>
+        <div>
+          <strong>Stay somewhere special</strong>
+          <span>Homes in destinations worldwide</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-features">
+    <div class="home-feature">
+      <i class="fa-solid fa-house"></i>
+      <div>
+        <h3>Unique stays</h3>
+        <p>From city rooms to cabins, castles, domes, and boats.</p>
+      </div>
+    </div>
+    <div class="home-feature">
+      <i class="fa-solid fa-magnifying-glass-location"></i>
+      <div>
+        <h3>Easy discovery</h3>
+        <p>Search destinations and browse stays by category.</p>
+      </div>
+    </div>
+    <div class="home-feature">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <div>
+        <h3>Explore the world</h3>
+        <p>View every stay on a map before planning your trip.</p>
+      </div>
+    </div>
+  </section>
+</main>
