@@ -19,6 +19,7 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const apiListingRouter = require("./routes/api/listings.js");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -94,6 +95,7 @@ app.get("/terms", (req, res) => {
   res.render("terms.ejs");
 });
 
+app.use("/api/listings", apiListingRouter);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
@@ -104,6 +106,18 @@ app.all("{*splat}", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Internal Server Error" } = err;
+
+  if (req.originalUrl.startsWith("/api/")) {
+    const isServerError = statusCode >= 500;
+
+    return res.status(statusCode).json({
+      error: {
+        code: isServerError ? "INTERNAL_SERVER_ERROR" : err.code || "API_ERROR",
+        message: isServerError ? "Something went wrong." : message,
+      },
+    });
+  }
+
   res.status(statusCode).render("./listings/error.ejs", { message });
 });
 

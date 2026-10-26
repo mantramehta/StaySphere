@@ -2,23 +2,10 @@ const Listing = require("../models/listing.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+const buildListingFilter = require("../utils/buildListingFilter.js");
 
 module.exports.index = async (req, res) => {
-  const { category, search } = req.query;
-  const filter = {};
-  const searchTerm = search?.trim();
-
-  if (category) {
-    filter.category = category;
-  }
-
-  if (searchTerm) {
-    filter.$or = [
-      { title: { $regex: searchTerm, $options: "i" } },
-      { location: { $regex: searchTerm, $options: "i" } },
-      { country: { $regex: searchTerm, $options: "i" } },
-    ];
-  }
+  const { filter, category, searchTerm } = buildListingFilter(req.query);
 
   const allListings = await Listing.find(filter);
 
