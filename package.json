@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node init/index.js",
-    "seed:add": "node init/addListings.js"
+    "seed:add": "node init/addListings.js",
+    "seed:dev": "node init/devSeed.js"
   },
   "keywords": [],
   "author": "Mantra Mehta",
