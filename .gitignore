@@ -19,3 +19,7 @@ debug.log
 Thumbs.db
 
 .prettierrc.json
+
+# Windows system files
+desktop.ini
+Thumbs.db
