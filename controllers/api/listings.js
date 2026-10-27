@@ -3,7 +3,7 @@ const Listing = require("../../models/listing.js");
 const ApiError = require("../../utils/ApiError.js");
 const buildListingFilter = require("../../utils/buildListingFilter.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
-const { cloudinary } = require("../../cloudConfig.js");
+const { cloudinary, uploadImage } = require("../../cloudConfig.js");
 
 const geocodingClient = mbxGeocoding({ accessToken: process.env.MAP_TOKEN });
 
@@ -58,16 +58,18 @@ module.exports.index = async (req, res) => {
 };
 
 module.exports.create = async (req, res) => {
+  let uploadedImage;
   let listingSaved = false;
 
   try {
     const geometry = await findGeometry(req.body.location, req.body.country);
+    uploadedImage = await uploadImage(req.file.buffer);
 
     const listing = new Listing({
       ...req.body,
       image: {
-        url: req.file.path,
-        filename: req.file.filename,
+        url: uploadedImage.secure_url,
+        filename: uploadedImage.public_id,
       },
       geometry,
       owner: req.user._id,
@@ -80,7 +82,7 @@ module.exports.create = async (req, res) => {
     res.status(201).json({ data: listing });
   } catch (error) {
     if (!listingSaved) {
-      await removeCloudinaryImage(req.file?.filename);
+      await removeCloudinaryImage(uploadedImage?.public_id);
     }
     throw error;
   }
@@ -90,6 +92,7 @@ module.exports.update = async (req, res) => {
   const listing = req.listing;
   const previousImageFilename = listing.image?.filename;
   let listingSaved = false;
+  let uploadedImage;
 
   try {
     const locationChanged =
@@ -106,16 +109,17 @@ module.exports.update = async (req, res) => {
     listing.set(req.body);
 
     if (req.file) {
+      uploadedImage = await uploadImage(req.file.buffer);
       listing.image = {
-        url: req.file.path,
-        filename: req.file.filename,
+        url: uploadedImage.secure_url,
+        filename: uploadedImage.public_id,
       };
     }
 
     await listing.save();
     listingSaved = true;
 
-    if (req.file && previousImageFilename !== req.file.filename) {
+    if (uploadedImage && previousImageFilename !== uploadedImage.public_id) {
       await removeCloudinaryImage(previousImageFilename);
     }
 
@@ -129,7 +133,7 @@ module.exports.update = async (req, res) => {
     res.status(200).json({ data: listing });
   } catch (error) {
     if (!listingSaved) {
-      await removeCloudinaryImage(req.file?.filename);
+      await removeCloudinaryImage(uploadedImage?.public_id);
     }
     throw error;
   }

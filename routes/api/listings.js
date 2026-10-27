@@ -8,13 +8,21 @@ const {
   validateApiListing,
 } = require("../../middleware.js");
 const { apiListingSchema } = require("../../schema.js");
+const ApiError = require("../../utils/ApiError.js");
 const multer = require("multer");
-const { storage } = require("../../cloudConfig.js");
 
 const router = express.Router();
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, callback) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return callback(
+        new ApiError(400, "INVALID_IMAGE", "Only image files are allowed."),
+      );
+    }
+    callback(null, true);
+  },
 });
 
 router

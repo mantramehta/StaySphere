@@ -1,29 +1,7 @@
+const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
 const Review = require("./models/review.js");
-const mongoose = require("mongoose");
-const { listingSchema, reviewSchema } = require("./schema.js");
-const ExpressError = require("./utils/ExpressError.js");
 const ApiError = require("./utils/ApiError.js");
-const { cloudinary } = require("./cloudConfig.js");
-
-async function removeUploadedFile(filename) {
-  if (!filename) return;
-
-  try {
-    await cloudinary.uploader.destroy(filename);
-  } catch (error) {
-    console.error("Cloudinary cleanup failed:", error.message);
-  }
-}
-
-module.exports.isLoggedIn = (req, res, next) => {
-  if (!req.isAuthenticated()) {
-    req.session.redirectUrl = req.originalUrl;
-    req.flash("error", "you must be logged in to create/modify/delete listing");
-    return res.redirect("/login");
-  }
-  next();
-};
 
 module.exports.isApiLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -36,15 +14,13 @@ module.exports.isApiLoggedIn = (req, res, next) => {
 };
 
 module.exports.validateApiListing = (schema, options = {}) => {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     const { error, value } = schema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true,
     });
 
     if (error) {
-      await removeUploadedFile(req.file?.filename);
-
       const message = error.details.map((detail) => detail.message).join(", ");
       return next(new ApiError(400, "VALIDATION_ERROR", message));
     }
@@ -132,54 +108,5 @@ module.exports.isApiReviewAuthor = async (req, res, next) => {
   }
 
   req.review = review;
-  next();
-};
-
-module.exports.saveRedirecturl = (req, res, next) => {
-  if (req.session.redirectUrl) {
-    res.locals.redirectUrl = req.session.redirectUrl;
-  }
-  next();
-};
-
-module.exports.isOwner = async (req, res, next) => {
-  const { id } = req.params;
-  let listing = await Listing.findById(id);
-  if (!res.locals.currUser || !listing.owner.equals(res.locals.currUser._id)) {
-    req.flash("error", "You are not the owner of this listing");
-    return res.redirect(`/listings/${id}`);
-  }
-  next();
-};
-
-module.exports.validateListing = (req, res, next) => {
-  const { error, value } = listingSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errMsg);
-  } else {
-    req.body = value;
-    next();
-  }
-};
-
-module.exports.validateReview = (req, res, next) => {
-  const { error, value } = reviewSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errMsg);
-  } else {
-    req.body = value;
-    next();
-  }
-};
-
-module.exports.isReviewAuthor = async (req, res, next) => {
-  let { id, reviewId } = req.params;
-  let review = await Review.findById(reviewId);
-  if (!review.author.equals(res.locals.currUser._id)) {
-    req.flash("error", "You are not the author of this review");
-    return res.redirect(`/listings/${id}`);
-  }
   next();
 };
