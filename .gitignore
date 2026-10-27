@@ -1,8 +1,11 @@
 # Environment variables and secrets
 .env
+.env*.local
 
 # Installed dependencies
 node_modules/
+client/node_modules/
+client/dist/
 
 # Log files
 debug.log

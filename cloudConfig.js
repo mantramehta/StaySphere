@@ -1,5 +1,4 @@
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -7,15 +6,24 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "Staysphere_DEV",
-    allowedFormats: ["png", "jpg", "jpeg"],
-  },
-});
+function uploadImage(buffer) {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: process.env.CLOUDINARY_FOLDER || "Staysphere_DEV",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      },
+    );
+
+    uploadStream.end(buffer);
+  });
+}
 
 module.exports = {
   cloudinary,
-  storage,
+  uploadImage,
 };
