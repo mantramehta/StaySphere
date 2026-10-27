@@ -103,7 +103,7 @@ function ListingDetailsPage({ currentUser }: ListingDetailsPageProps) {
         throw new Error(result.error.message)
       }
 
-      navigate('/')
+      navigate('/listings')
     } catch (requestError) {
       setActionError(
         requestError instanceof Error
@@ -196,7 +196,7 @@ function ListingDetailsPage({ currentUser }: ListingDetailsPageProps) {
 
   return (
     <main className="details-page">
-      <Link className="back-link" to="/">
+      <Link className="back-link" to="/listings">
         ← Back to stays
       </Link>
 

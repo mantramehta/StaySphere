@@ -7,6 +7,10 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import CreateListingPage from './pages/CreateListingPage'
 import EditListingPage from './pages/EditListingPage'
+import Footer from './components/Footer'
+import HomePage from './pages/HomePage'
+import PrivacyPage from './pages/PrivacyPage'
+import TermsPage from './pages/TermsPage'
 import type { AuthResponse, CurrentUser } from './types'
 
 function App() {
@@ -45,12 +49,16 @@ function App() {
   }
 
   return (
-    <>
+    <div className="app-shell">
       <header className="site-header">
-        <Link className="brand" to="/" aria-label="StaySphere home">
-          <img className="brand-logo" src="/staysphere-logo.svg" alt="" />
-          StaySphere
-        </Link>
+        <div className="header-left">
+          <Link className="brand" to="/" aria-label="StaySphere home">
+            <img className="brand-logo" src="/staysphere-logo.svg" alt="" />
+          </Link>
+          <Link className="explore-link" to="/listings">
+            Explore
+          </Link>
+        </div>
         <nav className="auth-nav" aria-label="Account navigation">
           {isAuthLoading && <span className="header-note">Checking session...</span>}
 
@@ -71,41 +79,51 @@ function App() {
         </nav>
       </header>
 
-      <Routes>
-        <Route path="/" element={<ListingsPage />} />
-        <Route
-          path="/listings/:id"
-          element={<ListingDetailsPage currentUser={currentUser} />}
-        />
-        <Route
-          path="/listings/new"
-          element={
-            isAuthLoading ? (
-              <p className="status-message page-message">Checking session...</p>
-            ) : currentUser ? (
-              <CreateListingPage />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route
-          path="/listings/:id/edit"
-          element={
-            isAuthLoading ? (
-              <p className="status-message page-message">Checking session...</p>
-            ) : currentUser ? (
-              <EditListingPage currentUser={currentUser} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route path="/login" element={<LoginPage onLogin={setCurrentUser} />} />
-        <Route path="/register" element={<RegisterPage onRegister={setCurrentUser} />} />
-        <Route path="*" element={<p className="status-message page-message">Page not found.</p>} />
-      </Routes>
-    </>
+      <div className="app-content">
+        <Routes>
+          <Route path="/" element={<HomePage currentUser={currentUser} />} />
+          <Route path="/listings" element={<ListingsPage />} />
+          <Route
+            path="/listings/:id"
+            element={<ListingDetailsPage currentUser={currentUser} />}
+          />
+          <Route
+            path="/listings/new"
+            element={
+              isAuthLoading ? (
+                <p className="status-message page-message">Checking session...</p>
+              ) : currentUser ? (
+                <CreateListingPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/listings/:id/edit"
+            element={
+              isAuthLoading ? (
+                <p className="status-message page-message">Checking session...</p>
+              ) : currentUser ? (
+                <EditListingPage currentUser={currentUser} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route path="/login" element={<LoginPage onLogin={setCurrentUser} />} />
+          <Route path="/register" element={<RegisterPage onRegister={setCurrentUser} />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route
+            path="*"
+            element={<p className="status-message page-message">Page not found.</p>}
+          />
+        </Routes>
+      </div>
+
+      <Footer />
+    </div>
   )
 }
 

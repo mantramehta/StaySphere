@@ -1,3 +1,13 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
+}
+
 .site-header {
   display: flex;
   align-items: center;
@@ -5,6 +15,12 @@
   padding: 1rem max(1.25rem, calc((100% - 75rem) / 2));
   border-bottom: 1px solid #ececec;
   background: #fff;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .brand {
@@ -21,6 +37,193 @@
   width: 2.25rem;
   height: 2.25rem;
   object-fit: contain;
+}
+
+.explore-link {
+  color: #222;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.explore-link:hover {
+  color: #fe424d;
+}
+
+.home-page {
+  width: min(100% - 2.5rem, 75rem);
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.home-hero {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 3rem;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border-radius: 1.5rem;
+  background: #fff5f5;
+}
+
+.home-copy h1 {
+  max-width: 32rem;
+  margin: 0.8rem 0 1rem;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.05;
+}
+
+.home-copy > p {
+  max-width: 34rem;
+  color: #666;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.75rem;
+}
+
+.home-actions a {
+  padding: 0.85rem 1.25rem;
+  border: 1px solid #fe424d;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.home-primary {
+  color: #fff;
+  background: #fe424d;
+}
+
+.home-secondary {
+  color: #fe424d;
+  background: #fff;
+}
+
+.home-image-wrap {
+  position: relative;
+}
+
+.home-image {
+  display: block;
+  width: 100%;
+  height: 25rem;
+  border-radius: 1.25rem;
+  object-fit: cover;
+}
+
+.home-image-note {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 0.8rem;
+  background: #fff;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+.home-image-note span {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.home-features article {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 1rem;
+}
+
+.home-features article > span {
+  color: #fe424d;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.home-features h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.home-features p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.legal-page {
+  width: min(100% - 2.5rem, 48rem);
+  margin: 0 auto;
+  padding: 4rem 0;
+}
+
+.legal-page h1 {
+  margin: 0.6rem 0 0;
+  font-size: clamp(2.4rem, 6vw, 3.5rem);
+}
+
+.legal-date {
+  margin-bottom: 2.5rem;
+  color: #777;
+}
+
+.legal-page section {
+  margin-bottom: 1.75rem;
+}
+
+.legal-page h2 {
+  margin-bottom: 0.4rem;
+  font-size: 1.25rem;
+}
+
+.legal-page section p {
+  margin: 0;
+  color: #555;
+  line-height: 1.7;
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem max(1.25rem, calc((100% - 75rem) / 2));
+  border-top: 1px solid #e8e8e8;
+  background: #f7f7f7;
+}
+
+.site-footer p {
+  margin: 0;
+  color: #555;
+}
+
+.site-footer nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.site-footer a {
+  color: #333;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: #fe424d;
 }
 
 .header-note {
@@ -673,6 +876,14 @@ h1 {
 }
 
 @media (max-width: 850px) {
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .home-features {
+    grid-template-columns: 1fr;
+  }
+
   .listing-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -689,6 +900,31 @@ h1 {
 @media (max-width: 560px) {
   .site-header {
     align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .home-page {
+    width: min(100% - 2rem, 75rem);
+    padding: 1.5rem 0;
+  }
+
+  .home-hero {
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+
+  .home-image {
+    height: 18rem;
+  }
+
+  .home-image-note {
+    position: static;
+    margin-top: 0.75rem;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .auth-nav {
