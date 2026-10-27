@@ -49,3 +49,23 @@ export type ListingDetails = Listing & {
 export type ListingResponse = {
   data: ListingDetails
 }
+
+export type CurrentUser = {
+  id: string
+  username: string
+  email: string
+}
+
+export type AuthResponse = {
+  data: {
+    authenticated: boolean
+    user: CurrentUser | null
+  }
+}
+
+export type ApiErrorResponse = {
+  error: {
+    code: string
+    message: string
+  }
+}

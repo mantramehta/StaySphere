@@ -33,4 +33,20 @@ const reviewSchema = Joi.object({
   }).required(),
 });
 
-module.exports = { listingSchema, reviewSchema };
+const apiRegisterSchema = Joi.object({
+  username: Joi.string().trim().min(3).max(30).pattern(/^[a-zA-Z0-9_]+$/).required(),
+  email: Joi.string().trim().lowercase().email().required(),
+  password: Joi.string().min(8).max(128).required(),
+});
+
+const apiLoginSchema = Joi.object({
+  username: Joi.string().trim().required(),
+  password: Joi.string().required(),
+});
+
+module.exports = {
+  listingSchema,
+  reviewSchema,
+  apiRegisterSchema,
+  apiLoginSchema,
+};

@@ -19,6 +19,7 @@ const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const apiAuthRouter = require("./routes/api/auth.js");
 const apiListingRouter = require("./routes/api/listings.js");
 
 app.set("view engine", "ejs");
@@ -95,6 +96,7 @@ app.get("/terms", (req, res) => {
   res.render("terms.ejs");
 });
 
+app.use("/api/auth", apiAuthRouter);
 app.use("/api/listings", apiListingRouter);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
