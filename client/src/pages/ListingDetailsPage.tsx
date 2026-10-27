@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import ListingMap from '../components/ListingMap'
 import type { ListingDetails, ListingResponse } from '../types'
 
 const priceFormatter = new Intl.NumberFormat('en-US', {
@@ -72,23 +73,32 @@ function ListingDetailsPage() {
       )}
 
       {!isLoading && !error && listing && (
-        <article className="details-card">
-          <img className="details-image" src={listing.image.url} alt={listing.title} />
-          <div className="details-content">
-            <span className="category">{listing.category.replaceAll('-', ' ')}</span>
-            <h1>{listing.title}</h1>
-            <p className="details-location">
-              {listing.location}, {listing.country}
-            </p>
-            <p className="details-description">{listing.description}</p>
-            <p className="details-price">
-              <strong>{priceFormatter.format(listing.price)}</strong> / night
-            </p>
-            <p className="details-host">
-              Hosted by <strong>{listing.owner?.username ?? 'StaySphere host'}</strong>
-            </p>
-          </div>
-        </article>
+        <>
+          <article className="details-card">
+            <img className="details-image" src={listing.image.url} alt={listing.title} />
+            <div className="details-content">
+              <span className="category">{listing.category.replaceAll('-', ' ')}</span>
+              <h1>{listing.title}</h1>
+              <p className="details-location">
+                {listing.location}, {listing.country}
+              </p>
+              <p className="details-description">{listing.description}</p>
+              <p className="details-price">
+                <strong>{priceFormatter.format(listing.price)}</strong> / night
+              </p>
+              <p className="details-host">
+                Hosted by <strong>{listing.owner?.username ?? 'StaySphere host'}</strong>
+              </p>
+            </div>
+          </article>
+
+          <section className="map-section">
+            <span className="eyebrow">Location</span>
+            <h2>Where you’ll be</h2>
+            <p>The marker shows the listing area. Exact details are shared after booking.</p>
+            <ListingMap coordinates={listing.geometry.coordinates} title={listing.title} />
+          </section>
+        </>
       )}
     </main>
   )

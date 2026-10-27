@@ -26,7 +26,7 @@ export type ListingsResponse = {
 export type ListingDetails = Listing & {
   geometry: {
     type: 'Point'
-    coordinates: number[]
+    coordinates: [number, number]
   }
   owner: {
     _id: string

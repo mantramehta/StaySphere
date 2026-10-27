@@ -1,5 +1,6 @@
 # Environment variables and secrets
 .env
+.env*.local
 
 # Installed dependencies
 node_modules/

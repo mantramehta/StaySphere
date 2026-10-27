@@ -286,6 +286,27 @@ h1 {
   color: #666;
 }
 
+.map-section {
+  margin-top: 3rem;
+}
+
+.map-section h2 {
+  margin: 0.4rem 0;
+  font-size: 1.8rem;
+}
+
+.map-section p {
+  margin: 0 0 1.25rem;
+  color: #666;
+}
+
+.listing-map {
+  width: 100%;
+  height: 26rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
 @media (max-width: 850px) {
   .listing-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -325,6 +346,10 @@ h1 {
 
   .details-image {
     height: 18rem;
+  }
+
+  .listing-map {
+    height: 20rem;
   }
 }
 
