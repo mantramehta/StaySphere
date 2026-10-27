@@ -23,6 +23,17 @@ export type ListingsResponse = {
   }
 }
 
+export type Review = {
+  _id: string
+  comments: string
+  rating: number
+  createdAt?: string
+  author?: {
+    _id: string
+    username: string
+  }
+}
+
 export type ListingDetails = Listing & {
   geometry: {
     type: 'Point'
@@ -32,15 +43,7 @@ export type ListingDetails = Listing & {
     _id: string
     username: string
   } | null
-  reviews: Array<{
-    _id: string
-    comments: string
-    rating: number
-    author?: {
-      _id: string
-      username: string
-    }
-  }>
+  reviews: Review[]
 }
 
 export type ListingResponse = {

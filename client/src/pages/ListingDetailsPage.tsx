@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import ListingMap from '../components/ListingMap'
+import ReviewCard from '../components/ReviewCard'
 import type { ListingDetails, ListingResponse } from '../types'
 
 const priceFormatter = new Intl.NumberFormat('en-US', {
@@ -14,6 +15,12 @@ function ListingDetailsPage() {
   const [listing, setListing] = useState<ListingDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const averageRating =
+    listing && listing.reviews.length > 0
+      ? listing.reviews.reduce((total, review) => total + review.rating, 0) /
+        listing.reviews.length
+      : null
 
   useEffect(() => {
     const controller = new AbortController()
@@ -91,6 +98,31 @@ function ListingDetailsPage() {
               </p>
             </div>
           </article>
+
+          <section className="reviews-section">
+            <div className="reviews-heading">
+              <div>
+                <span className="eyebrow">Guest feedback</span>
+                <h2>Reviews</h2>
+              </div>
+              {averageRating !== null && (
+                <p>
+                  <strong>★ {averageRating.toFixed(1)}</strong> · {listing.reviews.length}{' '}
+                  {listing.reviews.length === 1 ? 'review' : 'reviews'}
+                </p>
+              )}
+            </div>
+
+            {listing.reviews.length === 0 ? (
+              <p className="status-message">No reviews yet.</p>
+            ) : (
+              <div className="reviews-grid">
+                {listing.reviews.map((review) => (
+                  <ReviewCard key={review._id} review={review} />
+                ))}
+              </div>
+            )}
+          </section>
 
           <section className="map-section">
             <span className="eyebrow">Location</span>
