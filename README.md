@@ -1,325 +1,218 @@
-
 # StaySphere
 
-### Discover beautiful places. Explore unique stays.
+**A full-stack accommodation marketplace for discovering, sharing, and reviewing unique stays.**
 
-A full-stack travel accommodation platform built with **React, TypeScript, Node.js, Express, and MongoDB**.
+[Live application](https://staysphere-f4xw.onrender.com) · [GitHub repository](https://github.com/mantramehta/StaySphere)
 
-StaySphere lets users discover accommodations, explore destinations, search and filter listings, view property locations, and share reviews. Registered users can manage their own listings through authenticated, ownership-protected workflows.
+StaySphere is a React and Express application with search, category filters, interactive maps, image uploads, reviews, and ownership-based authorization. It began as an EJS project and was migrated to a typed React frontend backed by a JSON API.
 
-Built with a separate React frontend and Express backend, the application combines client-side routing, REST APIs, persistent authentication sessions, cloud image storage, and geolocation services.
+> The application runs on Render's free tier, so the first request after inactivity can take about a minute while the service wakes up.
 
-**[Live Demo](https://staysphere-f4xw.onrender.com)** | **[Source Code](https://github.com/mantramehta/StaySphere)**
+## Preview
 
----
-
-## Application Preview
-
-### Home Page
-
-![StaySphere Home](screenshots/homepage.png)
-
-### Explore Listings
-
-![StaySphere Listings](screenshots/listings.png)
-
----
-
-## Tech Stack
-
-| Layer | Technologies |
+| Home | Explore stays |
 |---|---|
-| Frontend | React, TypeScript, Vite, CSS |
-| Routing | React Router |
-| Backend | Node.js, Express.js |
-| Database | MongoDB Atlas, Mongoose |
-| Authentication | Passport.js, Express Session |
-| Session Storage | MongoDB |
-| Image Storage | Cloudinary |
-| Maps & Geocoding | Mapbox |
-| Deployment | Render |
+| ![StaySphere home page](screenshots/homepage.png) | ![StaySphere listings page](screenshots/listings.png) |
 
----
+## What users can do
 
-## Features
-
-### Property Discovery
-- Browse accommodations with images, locations, and pricing.
 - Search listings by title, location, or country.
-- Filter stays using property categories.
-- Navigate to individual listing details using React Router.
-- Explore property locations through interactive maps.
+- Combine search with 11 accommodation categories.
+- View listing details and locations on an interactive Mapbox map.
+- Register, log in, and keep an authenticated session across page reloads.
+- Create listings with an image upload and automatically geocoded coordinates.
+- Edit or delete only the listings they own.
+- Post reviews and delete only their own reviews.
+- Use the responsive interface on desktop and mobile screens.
 
-### Authentication & User Sessions
-- User registration, login, and logout.
-- Session-based authentication using Passport.js.
-- Persistent sessions backed by MongoDB.
-- Authentication-aware React components.
-- Current-user retrieval through a dedicated authentication API.
-- Credential-aware frontend requests for authenticated operations.
+## Engineering highlights
 
-### Listing Management
-- Create new accommodation listings.
-- Edit existing property details.
-- Delete listings owned by the authenticated user.
-- Upload property images through Cloudinary.
-- Manage listing data through Express routes and MongoDB.
+- **React migration:** The original server-rendered UI was replaced with React, TypeScript, Vite, and React Router while the Express and Mongoose domain models were retained.
+- **Server-side authorization:** Protected API operations verify the authenticated user on the server; hiding a button in React is never treated as authorization.
+- **Persistent sessions:** Passport sessions are stored in MongoDB with `connect-mongo`, so authentication is not lost when the server restarts.
+- **Safe image lifecycle:** Uploads use Multer memory storage and Cloudinary upload streams. Replaced and deleted listing images are also removed from Cloudinary.
+- **Location pipeline:** Express sends a listing's location to Mapbox Geocoding, stores the returned GeoJSON point, and React uses that point to render the map.
+- **Consistent API errors:** API failures use a predictable `{ error: { code, message } }` shape with appropriate HTTP status codes.
+- **Production SPA hosting:** In production, Express serves the Vite build and falls back to `index.html` for React Router deep links.
 
-### Reviews & Authorization
-- Add reviews to property listings.
-- Associate reviews with user accounts.
-- Restrict review deletion to the original author.
-- Enforce authorization on protected backend operations.
+## Architecture
 
-### Maps & External Services
-- Display property locations with Mapbox.
-- Integrate geocoding for location-based functionality.
-- Use Cloudinary for hosted property images.
-
----
-
-## System Architecture
-
-StaySphere uses a client-server architecture with a React frontend and an Express backend.
-
-```text
-                       USER
-                         |
-                         v
-                React + TypeScript
-                 Vite / React Router
-                         |
-                         | HTTP / JSON
-                         v
-                  Express Server
-                    Node.js
-                         |
-          +--------------+--------------+
-          |              |              |
-          v              v              v
-     Auth Routes    Listing Routes   Review Routes
-          |              |              |
-          +--------------+--------------+
-                         |
-              Controllers / Middleware
-                         |
-                       Mongoose
-                         |
-                         v
-                    MongoDB Atlas
-
-
-External Services
------------------
-Cloudinary   Image uploads and storage
-Mapbox       Maps and geocoding
-Render       Production hosting
+```mermaid
+flowchart LR
+    Browser[React + TypeScript] -->|JSON requests| API[Express API]
+    API --> Auth[Passport + sessions]
+    API --> Data[Mongoose models]
+    Auth --> Mongo[(MongoDB Atlas)]
+    Data --> Mongo
+    API --> Cloudinary[Cloudinary images]
+    API --> Geocoding[Mapbox geocoding]
+    Browser --> Maps[Mapbox maps]
 ```
 
-### Frontend
+The project uses one repository and one production service. During development, Vite runs the frontend on port `5173` and proxies `/api` requests to Express on port `8080`. In production, Express serves both the API and the compiled React application.
 
-The React application is located in `client/` and uses TypeScript for typed application logic.
+## API overview
 
-- React Router handles client-side navigation.
-- Reusable components support shared UI elements.
-- Page components handle individual application views.
-- React Hooks manage component state and side effects.
-- Fetch requests communicate with the Express backend.
+All application data is exchanged as JSON, except listing create/edit requests, which use `multipart/form-data` for image uploads.
 
-### Backend
+| Method | Endpoint | Purpose | Access |
+|---|---|---|---|
+| `GET` | `/api/auth/me` | Read the current session | Public |
+| `POST` | `/api/auth/register` | Create an account and session | Public |
+| `POST` | `/api/auth/login` | Start a session | Public |
+| `POST` | `/api/auth/logout` | End the current session | Signed in |
+| `GET` | `/api/listings` | List, search, and filter stays | Public |
+| `GET` | `/api/listings/:id` | Read one stay and its reviews | Public |
+| `POST` | `/api/listings` | Create a stay | Signed in |
+| `PATCH` | `/api/listings/:id` | Edit a stay | Listing owner |
+| `DELETE` | `/api/listings/:id` | Delete a stay | Listing owner |
+| `POST` | `/api/listings/:id/reviews` | Add a review | Signed in |
+| `DELETE` | `/api/listings/:id/reviews/:reviewId` | Delete a review | Review author |
 
-The Express backend is located at the repository root and separates routing, controllers, middleware, models, and utilities.
+`GET /api/listings` accepts optional `search` and `category` query parameters. When both are present, the API searches only within the selected category.
 
-It is responsible for:
-- Processing API requests.
-- Managing authentication and sessions.
-- Validating and authorizing protected operations.
-- Performing MongoDB operations through Mongoose.
-- Integrating external services.
+## Tech stack
 
-### Authentication Flow
+| Area | Technology |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, React Router, CSS |
+| Backend | Node.js, Express 5 |
+| Data | MongoDB Atlas, Mongoose |
+| Authentication | Passport.js, `express-session`, `connect-mongo` |
+| Validation | Joi |
+| Images | Multer, Cloudinary |
+| Maps | Mapbox GL JS, Mapbox Geocoding API |
+| Hosting | Render |
 
-The frontend retrieves the currently authenticated user using:
-
-```typescript
-fetch('/api/auth/me', {
-  credentials: 'include'
-});
-```
-
-The Express backend uses session-based authentication to identify the user.
-
-React maintains the current user in component state and updates the interface based on the authentication result.
-
-Protected operations are authorized on the backend rather than relying only on frontend UI restrictions.
-
----
-
-## Project Structure
+## Project structure
 
 ```text
 StaySphere/
-|
-|-- client/                  # React + TypeScript frontend
-|   |-- public/              # Static assets
-|   |-- src/
-|   |   |-- components/      # Reusable UI components
-|   |   |-- pages/           # Application pages
-|   |   |-- App.tsx          # Routes and app-level logic
-|   |   |-- main.tsx         # React entry point
-|   |   |-- types.ts         # TypeScript types
-|   |   |-- App.css
-|   |   `-- index.css
-|   |-- .env.example
-|   |-- package.json
-|   `-- vite.config.ts
-|
-|-- controllers/             # Request handlers
-|-- models/                  # Mongoose models
-|-- routes/                  # Express routes
-|-- utils/                   # Backend utilities
-|-- init/                    # Development seed data
-|-- app.js                   # Express application
-|-- middleware.js            # Application middleware
-|-- schema.js                # Validation schemas
-|-- cloudConfig.js           # Cloudinary configuration
-|-- .env.example
-|-- package.json
-`-- README.md
+├── client/
+│   ├── public/                 # Logo and browser assets
+│   └── src/
+│       ├── components/         # Shared cards, footer, and map
+│       ├── pages/              # Route-level React pages
+│       ├── App.tsx             # Layout, auth state, and routes
+│       ├── types.ts            # Shared frontend API types
+│       └── App.css             # Responsive application styles
+├── controllers/api/            # API request handlers
+├── routes/api/                 # Express route definitions
+├── models/                     # Mongoose models
+├── utils/                      # Errors, async wrapper, filters
+├── init/                       # Guarded development seed data
+├── app.js                      # Express setup and server startup
+├── middleware.js               # Validation and authorization
+├── schema.js                   # Joi request schemas
+└── cloudConfig.js              # Cloudinary upload integration
 ```
 
-Generated build files, installed dependencies, and private environment files are excluded from this simplified structure.
-
----
-
-## Local Development
+## Run locally
 
 ### Prerequisites
 
-- Node.js and npm
-- MongoDB Atlas or local MongoDB
-- Cloudinary account
-- Mapbox access token
+- Node.js 24 and npm
+- An isolated MongoDB database
+- A Cloudinary account
+- A Mapbox public access token
 
-### 1. Clone the Repository
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/mantramehta/StaySphere.git
 cd StaySphere
-```
-
-### 2. Install Dependencies
-
-Install backend dependencies:
-
-```bash
 npm install
-```
-
-Install frontend dependencies:
-
-```bash
 npm install --prefix client
 ```
 
-### 3. Configure Environment Variables
+### 2. Configure the backend
 
-Create the backend `.env` file based on `.env.example`.
+Copy `.env.example` to `.env` and replace the placeholders:
 
-Create `client/.env.local` using `client/.env.example`.
+| Variable | Used for |
+|---|---|
+| `ATLASDB_URL` | MongoDB connection string |
+| `SECRET` | Session signing and session-store encryption |
+| `MAP_TOKEN` | Server-side Mapbox geocoding |
+| `CLOUD_NAME` | Cloudinary account name |
+| `CLOUD_API_KEY` | Cloudinary API key |
+| `CLOUD_API_SECRET` | Cloudinary API secret |
+| `CLOUDINARY_FOLDER` | Folder for uploaded development images |
+| `DEV_SEED_PASSWORD` | Development-only seed account password |
+| `PORT` | Local Express port; defaults to `8080` |
 
-Provide the required database configuration, session credentials, Cloudinary configuration, and public Mapbox token.
+Copy `client/.env.example` to `client/.env.local` and provide:
 
-Never commit private credentials or production secrets.
+```env
+VITE_MAP_TOKEN=your_url_restricted_public_mapbox_token
+```
 
-### 4. Start the Backend
+Never commit either real environment file. Use a separate development database and separate development credentials.
+
+### 3. Start both development servers
+
+Terminal 1:
 
 ```bash
 npm start
 ```
 
-### 5. Start the Frontend
-
-In a separate terminal:
+Terminal 2:
 
 ```bash
 npm run dev --prefix client
 ```
 
-Open the local development URL shown by Vite.
+Open `http://localhost:5173`.
 
-**Note:** Use an isolated development database. Do not run seed scripts against production data.
-
----
-
-## Production Deployment
-
-StaySphere is deployed on Render.
-
-The application uses a production build of the React frontend, served by Express alongside the backend routes.
-
-Build command:
+### Optional development data
 
 ```bash
-npm install && npm run build
+npm run seed:dev
 ```
 
-Start command:
+The seed script refuses to run unless the connected database is named `staysphere_dev`. It must never be used with the production database.
+
+## Build and quality checks
 
 ```bash
-npm start
+npm run build
+npm run lint
+npm audit --omit=dev
 ```
 
-The root build script builds the React application in the `client/` directory.
+The repository currently relies on build, lint, dependency-audit, and manual end-to-end checks. Automated API and component tests are a planned improvement.
 
-When `NODE_ENV=production`, Express serves the compiled React application from `client/dist`.
+## Deployment
 
-**Live Application:** https://staysphere-f4xw.onrender.com
+The Render Web Service builds the React client and then starts Express:
 
----
+```text
+Build: npm install && npm run build
+Start: npm start
+```
 
-## Engineering Highlights
+Render supplies production environment variables, including `NODE_ENV=production`. The server connects to MongoDB before it begins listening, serves `client/dist`, and uses secure session cookies behind Render's proxy.
 
-### Client-Side Routing
+## Security and reliability choices
 
-React Router manages navigation between application pages without requiring a full document reload for normal internal navigation.
+- Passwords are salted and hashed by `passport-local-mongoose`; raw passwords are not stored.
+- Joi validates incoming authentication, listing, and review data.
+- Listing ownership and review authorship are checked by Express middleware.
+- Uploaded files are limited to images and capped at 5 MB.
+- Session cookies are HTTP-only, `SameSite=Lax`, and secure in production.
+- Database, Cloudinary, session, and Mapbox secrets stay in environment variables.
+- The development seed script is guarded against production use.
 
-### Persistent Authentication
+## Roadmap
 
-Passport.js and MongoDB-backed sessions support authenticated requests across navigation and page reloads.
-
-### Server-Side Authorization
-
-Sensitive operations are protected by backend authorization checks, including listing ownership and review authorship.
-
-### Separation of Concerns
-
-The backend separates routes, controllers, middleware, models, and supporting utilities, while the frontend separates pages, reusable components, and TypeScript types.
-
-### Third-Party Integrations
-
-Cloudinary handles listing images, while Mapbox provides maps and geocoding functionality.
-
----
-
-## Future Improvements
-
-- Automated testing for API endpoints and authentication flows.
-- Improved search and filtering experiences.
-- Accessibility enhancements.
-- Additional performance optimizations.
-- Further improvements to user and listing management.
-
----
+- Add automated API, authentication, and React component tests.
+- Add pagination to the listing endpoint.
+- Improve keyboard and screen-reader testing.
+- Add saved stays and user profile pages.
 
 ## Author
 
-**Mantra Mehta**
+**Mantra Mehta** — M.S. Computer Science
 
-M.S. Computer Science | Software Engineer
-
-[LinkedIn](https://www.linkedin.com/in/mantra-mehta/) | [GitHub](https://github.com/mantramehta)
-
----
-
-Built to demonstrate full-stack development with React, TypeScript, Express, MongoDB, authentication, REST APIs, and cloud deployment.
+[LinkedIn](https://www.linkedin.com/in/mantra-mehta/) · [GitHub](https://github.com/mantramehta)
