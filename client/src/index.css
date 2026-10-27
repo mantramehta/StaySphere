@@ -4,6 +4,7 @@
   background: #fff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  scrollbar-gutter: stable;
 }
 
 * {

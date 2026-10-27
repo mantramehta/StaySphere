@@ -550,6 +550,50 @@ h1 {
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-image,
+.skeleton-content span {
+  display: block;
+  background: #eeeeee;
+  animation: skeleton-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.skeleton-image {
+  aspect-ratio: 4 / 3;
+}
+
+.skeleton-content {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1.25rem;
+}
+
+.skeleton-content span {
+  height: 0.9rem;
+  border-radius: 999px;
+}
+
+.skeleton-content span:nth-child(1) {
+  width: 30%;
+}
+
+.skeleton-content span:nth-child(2) {
+  width: 75%;
+}
+
+.skeleton-content span:nth-child(3) {
+  width: 45%;
+}
+
+@keyframes skeleton-pulse {
+  to {
+    background: #f7f7f7;
+  }
+}
+
 .listing-link:hover .listing-card,
 .listing-link:focus-visible .listing-card {
   transform: translateY(-3px);

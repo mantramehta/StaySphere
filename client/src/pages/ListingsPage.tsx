@@ -126,7 +126,23 @@ function ListingsPage() {
         ))}
       </nav>
 
-      {isLoading && <p className="status-message">Loading stays...</p>}
+      {isLoading && (
+        <>
+          <p className="visually-hidden" role="status">Loading stays...</p>
+          <div className="listing-grid" aria-hidden="true">
+            {Array.from({ length: 6 }, (_, index) => (
+              <div className="listing-card skeleton-card" key={index}>
+                <div className="skeleton-image" />
+                <div className="skeleton-content">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {error && (
         <div className="status-message error-message" role="alert">
