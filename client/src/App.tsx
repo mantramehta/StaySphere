@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Link, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import './App.css'
 import ListingDetailsPage from './pages/ListingDetailsPage'
 import ListingsPage from './pages/ListingsPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import CreateListingPage from './pages/CreateListingPage'
+import EditListingPage from './pages/EditListingPage'
 import type { AuthResponse, CurrentUser } from './types'
 
 function App() {
@@ -46,7 +48,7 @@ function App() {
     <>
       <header className="site-header">
         <Link className="brand" to="/" aria-label="StaySphere home">
-          <span className="brand-mark">S</span>
+          <img className="brand-logo" src="/staysphere-logo.svg" alt="" />
           StaySphere
         </Link>
         <nav className="auth-nav" aria-label="Account navigation">
@@ -61,6 +63,7 @@ function App() {
 
           {!isAuthLoading && currentUser && (
             <>
+              <Link to="/listings/new">Add a stay</Link>
               <span className="header-note">Hi, {currentUser.username}</span>
               <button className="logout-button" type="button" onClick={handleLogout}>Log out</button>
             </>
@@ -70,7 +73,34 @@ function App() {
 
       <Routes>
         <Route path="/" element={<ListingsPage />} />
-        <Route path="/listings/:id" element={<ListingDetailsPage />} />
+        <Route
+          path="/listings/:id"
+          element={<ListingDetailsPage currentUser={currentUser} />}
+        />
+        <Route
+          path="/listings/new"
+          element={
+            isAuthLoading ? (
+              <p className="status-message page-message">Checking session...</p>
+            ) : currentUser ? (
+              <CreateListingPage />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/listings/:id/edit"
+          element={
+            isAuthLoading ? (
+              <p className="status-message page-message">Checking session...</p>
+            ) : currentUser ? (
+              <EditListingPage currentUser={currentUser} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
         <Route path="/login" element={<LoginPage onLogin={setCurrentUser} />} />
         <Route path="/register" element={<RegisterPage onRegister={setCurrentUser} />} />
         <Route path="*" element={<p className="status-message page-message">Page not found.</p>} />

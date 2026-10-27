@@ -50,6 +50,21 @@ export type ListingResponse = {
   data: ListingDetails
 }
 
+export type CreateListingResponse = {
+  data: ListingDetails
+}
+
+export type ReviewResponse = {
+  data: Review
+}
+
+export type DeleteResponse = {
+  data: {
+    id: string
+    deleted: boolean
+  }
+}
+
 export type CurrentUser = {
   id: string
   username: string

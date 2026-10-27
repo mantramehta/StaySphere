@@ -44,9 +44,39 @@ const apiLoginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+const apiListingSchema = Joi.object({
+  title: Joi.string().trim().min(3).max(100).required(),
+  description: Joi.string().trim().min(10).max(2000).required(),
+  price: Joi.number().min(0).required(),
+  location: Joi.string().trim().min(2).max(100).required(),
+  country: Joi.string().trim().min(2).max(100).required(),
+  category: Joi.string()
+    .valid(
+      "trending",
+      "rooms",
+      "iconic-cities",
+      "mountains",
+      "castles",
+      "amazing-pools",
+      "camping",
+      "farms",
+      "arctic",
+      "domes",
+      "boats",
+    )
+    .required(),
+});
+
+const apiReviewSchema = Joi.object({
+  rating: Joi.number().integer().min(1).max(5).required(),
+  comments: Joi.string().trim().min(3).max(1000).required(),
+});
+
 module.exports = {
   listingSchema,
   reviewSchema,
   apiRegisterSchema,
   apiLoginSchema,
+  apiListingSchema,
+  apiReviewSchema,
 };

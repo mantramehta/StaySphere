@@ -17,14 +17,10 @@
   text-decoration: none;
 }
 
-.brand-mark {
-  display: grid;
+.brand-logo {
   width: 2.25rem;
   height: 2.25rem;
-  place-items: center;
-  border-radius: 0.7rem;
-  color: #fff;
-  background: #fe424d;
+  object-fit: contain;
 }
 
 .header-note {
@@ -125,6 +121,92 @@
   font-weight: 700;
 }
 
+.form-page {
+  width: min(100% - 2.5rem, 50rem);
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.listing-form-card {
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border: 1px solid #e8e8e8;
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 0.8rem 2.5rem rgba(30, 30, 30, 0.08);
+}
+
+.listing-form-card h1 {
+  margin-bottom: 0.75rem;
+  font-size: 2.25rem;
+}
+
+.listing-form-card > p {
+  color: #666;
+}
+
+.listing-form {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.listing-form label {
+  font-weight: 700;
+}
+
+.listing-form input,
+.listing-form textarea,
+.listing-form select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d8d8d8;
+  border-radius: 0.75rem;
+  background: #fff;
+  font: inherit;
+}
+
+.listing-form textarea {
+  resize: vertical;
+}
+
+.listing-form input:focus,
+.listing-form textarea:focus,
+.listing-form select:focus {
+  border-color: #fe424d;
+  outline: 2px solid #ffdadd;
+}
+
+.listing-form button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.form-row > div {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.current-image {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  color: #555;
+  font-weight: 700;
+}
+
+.current-image img {
+  width: min(100%, 20rem);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
 .listings-section {
   width: min(100% - 2.5rem, 75rem);
   margin: 0 auto;
@@ -192,10 +274,17 @@ h1 {
 
 .primary-button {
   padding: 0.85rem 1.4rem;
+  border: 0;
   border-radius: 0.75rem;
   color: #fff;
   background: #fe424d;
+  font: inherit;
   font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-button:disabled {
+  cursor: wait;
 }
 
 .clear-button {
@@ -379,6 +468,39 @@ h1 {
   color: #666;
 }
 
+.owner-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.edit-button,
+.delete-button {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.edit-button {
+  color: #333;
+  background: #fff;
+}
+
+.delete-button {
+  color: #fff;
+  border-color: #b4232d;
+  background: #b4232d;
+}
+
+.delete-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .map-section {
   margin-top: 3rem;
 }
@@ -404,6 +526,57 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.review-form {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 1rem;
+  background: #fafafa;
+}
+
+.review-form > div {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.review-form label {
+  font-weight: 700;
+}
+
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d8d8d8;
+  border-radius: 0.7rem;
+  background: #fff;
+  font: inherit;
+}
+
+.review-form textarea {
+  resize: vertical;
+}
+
+.review-login-message {
+  margin: 0 0 1.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: #fafafa;
+}
+
+.review-login-message a {
+  color: #d92f3b;
+  font-weight: 700;
+}
+
+.review-error {
+  margin-bottom: 1rem;
 }
 
 .review-card {
@@ -440,6 +613,46 @@ h1 {
   margin-top: 1rem;
   color: #444;
   line-height: 1.6;
+}
+
+.review-delete-button {
+  margin-top: 1rem;
+  padding: 0;
+  border: 0;
+  color: #a51f2a;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-delete-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.review-confirmation {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.review-confirmation button {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.review-confirmation .confirm-delete {
+  color: #fff;
+  border-color: #b4232d;
+  background: #b4232d;
 }
 
 .map-section h2 {
@@ -486,6 +699,10 @@ h1 {
     display: none;
   }
 
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
   .listings-section {
     width: min(100% - 2rem, 75rem);
     padding: 2.5rem 0;
@@ -515,6 +732,11 @@ h1 {
 
   .reviews-grid {
     grid-template-columns: 1fr;
+  }
+
+  .review-form {
+    grid-template-columns: 1fr;
+    align-items: stretch;
   }
 
   .details-image {

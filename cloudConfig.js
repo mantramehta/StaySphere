@@ -10,7 +10,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "Staysphere_DEV",
+    folder: process.env.CLOUDINARY_FOLDER || "Staysphere_DEV",
     allowedFormats: ["png", "jpg", "jpeg"],
   },
 });
