@@ -22,3 +22,27 @@ export type ListingsResponse = {
     }
   }
 }
+
+export type ListingDetails = Listing & {
+  geometry: {
+    type: 'Point'
+    coordinates: number[]
+  }
+  owner: {
+    _id: string
+    username: string
+  } | null
+  reviews: Array<{
+    _id: string
+    comments: string
+    rating: number
+    author?: {
+      _id: string
+      username: string
+    }
+  }>
+}
+
+export type ListingResponse = {
+  data: ListingDetails
+}
