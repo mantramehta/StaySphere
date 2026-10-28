@@ -14,6 +14,7 @@ const ApiError = require("./utils/ApiError.js");
 
 const apiAuthRouter = require("./routes/api/auth.js");
 const apiListingRouter = require("./routes/api/listings.js");
+const apiAiRouter = require("./routes/api/ai.js");
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -65,6 +66,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use("/api/auth", apiAuthRouter);
 app.use("/api/listings", apiListingRouter);
+app.use("/api/ai", apiAiRouter);
 
 app.use("/api/{*splat}", (req, res, next) => {
   next(new ApiError(404, "NOT_FOUND", "The requested API route was not found."));
@@ -86,6 +88,8 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const isServerError = statusCode >= 500;
+  // ApiErrors carry messages written for users; anything else may leak internals.
+  const hideDetails = isServerError && !(err instanceof ApiError);
 
   if (isServerError) {
     console.error(err);
@@ -93,8 +97,8 @@ app.use((err, req, res, next) => {
 
   res.status(statusCode).json({
     error: {
-      code: isServerError ? "INTERNAL_SERVER_ERROR" : err.code || "API_ERROR",
-      message: isServerError ? "Something went wrong." : err.message,
+      code: hideDetails ? "INTERNAL_SERVER_ERROR" : err.code || "API_ERROR",
+      message: hideDetails ? "Something went wrong." : err.message,
     },
   });
 });

@@ -13,8 +13,8 @@ Fill the fields as follows:
 - isTravelRequest: true only if the message describes a place to stay or a trip. Otherwise false, with every other field empty.
 - destination: a city, region, or country the user names, in English (for example "India" or "Paris"). Use null if none is named. Never guess a destination from words like "beach" or "mountains".
 - minPrice and maxPrice: every StaySphere price is per night in US dollars. Fill these only when the user gives a number in dollars or without a currency. "Under $250" means maxPrice 250. Prices in other currencies go in unsupported.
-- categories: only when the request clearly matches one: mountains, amazing-pools (a pool), camping, farms, castles, arctic (snow or arctic), domes, boats (houseboats or staying on water), rooms (a private room), iconic-cities (a famous big city).
-- keywords: up to 5 single lowercase words describing the stay that a listing description might contain, such as "beach", "ocean", "peaceful", "romantic", or "lake". Use simple base words ("beach", not "beachfront"). Never include price words like "cheap" or "affordable".
+- categories: only when the user asks for that type of stay: mountains, amazing-pools (a pool), camping, farms, castles, arctic (snow or arctic), domes, boats (houseboats or staying on water), rooms (a private room), iconic-cities (a big-city stay without a named city). Never add a category just because of the destination.
+- keywords: up to 5 single lowercase words describing the stay that a listing description might contain, such as "beach", "ocean", "peaceful", "romantic", or "lake". Use simple base words ("beach", not "beachfront") and add close synonyms a description might use instead (for a beach stay: "beach", "ocean", "coast"). Never include price words like "cheap" or "affordable".
 - unsupported: short phrases for requests StaySphere cannot search by, such as dates, availability, number of guests, ratings, or non-dollar prices.`;
 
 const RESPONSE_SCHEMA = {
