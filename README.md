@@ -15,7 +15,7 @@ Describe your ideal stay in plain English, and StaySphere finds real matching li
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75B2?logo=googlegemini&logoColor=white)
 ![Render](https://img.shields.io/badge/Deployed_on_Render-46E3B7?logo=render&logoColor=black)
 
-![AI travel concierge returning real listings with match reasons](screenshots/ai-search.png)
+<img src="screenshots/ai-search.png" alt="AI travel concierge returning real listings with match reasons" width="820">
 
 </div>
 
@@ -45,15 +45,20 @@ Describe your ideal stay in plain English, and StaySphere finds real matching li
 | Home | Explore stays |
 |---|---|
 | ![StaySphere home page](screenshots/homepage.png) | ![StaySphere listings page](screenshots/listings.png) |
-| **Listing details with map and reviews** | **AI search on mobile** |
-| ![Listing details page with map and reviews](screenshots/listing-details.png) | ![AI search on a mobile screen](screenshots/mobile-ai-search.png) |
+
+<p align="center"><strong>Listing details with map and reviews</strong> · <strong>AI search on mobile</strong></p>
+
+<p align="center">
+  <img src="screenshots/listing-details.png" alt="Listing details page with map and reviews" width="61%">
+  <img src="screenshots/mobile-ai-search.png" alt="AI search on a mobile screen" width="35%">
+</p>
 
 ## AI travel concierge
 
 **Core principle: the AI understands the request; the backend controls the search.**
 
 ```mermaid
-flowchart LR
+flowchart TD
     Prompt["User prompt"] --> Validate["Joi: validate the prompt"]
     Validate --> Gemini["Gemini: structured JSON preferences"]
     Gemini --> Check["Joi: validate the AI output"]
