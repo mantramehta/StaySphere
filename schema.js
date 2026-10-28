@@ -1,4 +1,10 @@
 const Joi = require("joi");
+const Listing = require("./models/listing.js");
+
+// "trending" is an editorial label, not something a guest asks for.
+const aiSearchCategories = Listing.schema
+  .path("category")
+  .enumValues.filter((category) => category !== "trending");
 
 const apiRegisterSchema = Joi.object({
   username: Joi.string().trim().min(3).max(30).pattern(/^[a-zA-Z0-9_]+$/).required(),
@@ -39,9 +45,48 @@ const apiReviewSchema = Joi.object({
   comments: Joi.string().trim().min(3).max(1000).required(),
 });
 
+const aiRecommendationRequestSchema = Joi.object({
+  prompt: Joi.string().trim().min(3).max(300).required(),
+});
+
+const aiPreferencesSchema = Joi.object({
+  isTravelRequest: Joi.boolean().required(),
+  destination: Joi.string()
+    .trim()
+    .max(60)
+    .pattern(/^[\p{L}\s.,'-]+$/u)
+    .allow(null)
+    .empty("")
+    .default(null),
+  minPrice: Joi.number().min(0).max(100000).allow(null).default(null),
+  maxPrice: Joi.number().min(0).max(100000).allow(null).default(null),
+  categories: Joi.array()
+    .items(Joi.string().valid(...aiSearchCategories))
+    .max(3)
+    .unique()
+    .default([]),
+  keywords: Joi.array()
+    .items(Joi.string().trim().lowercase().pattern(/^[a-z-]{2,30}$/))
+    .max(5)
+    .unique()
+    .default([]),
+  unsupported: Joi.array().items(Joi.string().trim().max(80)).max(5).default([]),
+}).custom((preferences, helpers) => {
+  const { minPrice, maxPrice } = preferences;
+
+  if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+    return helpers.message("minPrice cannot be greater than maxPrice");
+  }
+
+  return preferences;
+});
+
 module.exports = {
   apiRegisterSchema,
   apiLoginSchema,
   apiListingSchema,
   apiReviewSchema,
+  aiSearchCategories,
+  aiRecommendationRequestSchema,
+  aiPreferencesSchema,
 };
