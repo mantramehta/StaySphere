@@ -23,6 +23,29 @@ export type ListingsResponse = {
   }
 }
 
+export type AIPreferences = {
+  destination: string | null
+  minPrice: number | null
+  maxPrice: number | null
+  categories: string[]
+  keywords: string[]
+}
+
+export type AIRecommendation = {
+  listing: Listing
+  score: number
+  reasons: string[]
+}
+
+export type AIRecommendationsResponse = {
+  data: AIRecommendation[]
+  meta: {
+    count: number
+    preferences: AIPreferences
+    unsupported: string[]
+  }
+}
+
 export type Review = {
   _id: string
   comments: string

@@ -3,6 +3,7 @@ import type { Listing } from '../types'
 
 type ListingCardProps = {
   listing: Listing
+  reasons?: string[]
 }
 
 const priceFormatter = new Intl.NumberFormat('en-US', {
@@ -11,7 +12,7 @@ const priceFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 })
 
-function ListingCard({ listing }: ListingCardProps) {
+function ListingCard({ listing, reasons }: ListingCardProps) {
   return (
     <Link className="listing-link" to={`/listings/${listing._id}`}>
       <article className="listing-card">
@@ -25,6 +26,13 @@ function ListingCard({ listing }: ListingCardProps) {
           <p className="price">
             <strong>{priceFormatter.format(listing.price)}</strong> / night
           </p>
+          {reasons && reasons.length > 0 && (
+            <ul className="match-reasons" aria-label="Why this stay matches">
+              {reasons.map((reason) => (
+                <li key={reason}>{reason}</li>
+              ))}
+            </ul>
+          )}
         </div>
       </article>
     </Link>

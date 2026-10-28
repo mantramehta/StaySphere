@@ -1,6 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import AIRecommendations from '../components/AIRecommendations'
+import AITravelSearch from '../components/AITravelSearch'
 import ListingCard from '../components/ListingCard'
-import type { Listing, ListingsResponse } from '../types'
+import type { AIRecommendationsResponse, Listing, ListingsResponse } from '../types'
 
 const categories = [
   { label: 'All', value: '' },
@@ -24,6 +26,7 @@ function ListingsPage() {
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [aiResult, setAiResult] = useState<AIRecommendationsResponse | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -84,83 +87,91 @@ function ListingsPage() {
           <span className="eyebrow">Explore stays</span>
           <h1>Find somewhere memorable</h1>
         </div>
-        {!isLoading && !error && (
+        {!aiResult && !isLoading && !error && (
           <p className="result-count">
             {listings.length} {listings.length === 1 ? 'stay' : 'stays'}
           </p>
         )}
       </div>
 
-      <form className="search-form" onSubmit={handleSearch}>
-        <label className="visually-hidden" htmlFor="listing-search">
-          Search stays
-        </label>
-        <input
-          id="listing-search"
-          type="search"
-          placeholder="Search by title, location, or country"
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-        />
-        <button className="primary-button" type="submit">
-          Search
-        </button>
-        {search && (
-          <button className="clear-button" type="button" onClick={clearSearch}>
-            Clear
-          </button>
-        )}
-      </form>
+      <AITravelSearch onResults={setAiResult} />
 
-      <nav className="category-filters" aria-label="Filter stays by category">
-        {categories.map((category) => (
-          <button
-            className={selectedCategory === category.value ? 'filter active-filter' : 'filter'}
-            type="button"
-            key={category.value || 'all'}
-            aria-pressed={selectedCategory === category.value}
-            onClick={() => setSelectedCategory(category.value)}
-          >
-            {category.label}
-          </button>
-        ))}
-      </nav>
-
-      {isLoading && (
+      {aiResult ? (
+        <AIRecommendations result={aiResult} onClear={() => setAiResult(null)} />
+      ) : (
         <>
-          <p className="visually-hidden" role="status">Loading stays...</p>
-          <div className="listing-grid" aria-hidden="true">
-            {Array.from({ length: 6 }, (_, index) => (
-              <div className="listing-card skeleton-card" key={index}>
-                <div className="skeleton-image" />
-                <div className="skeleton-content">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </div>
+          <form className="search-form" onSubmit={handleSearch}>
+            <label className="visually-hidden" htmlFor="listing-search">
+              Search stays
+            </label>
+            <input
+              id="listing-search"
+              type="search"
+              placeholder="Search by title, location, or country"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+            />
+            <button className="primary-button" type="submit">
+              Search
+            </button>
+            {search && (
+              <button className="clear-button" type="button" onClick={clearSearch}>
+                Clear
+              </button>
+            )}
+          </form>
+
+          <nav className="category-filters" aria-label="Filter stays by category">
+            {categories.map((category) => (
+              <button
+                className={selectedCategory === category.value ? 'filter active-filter' : 'filter'}
+                type="button"
+                key={category.value || 'all'}
+                aria-pressed={selectedCategory === category.value}
+                onClick={() => setSelectedCategory(category.value)}
+              >
+                {category.label}
+              </button>
             ))}
-          </div>
+          </nav>
+
+          {isLoading && (
+            <>
+              <p className="visually-hidden" role="status">Loading stays...</p>
+              <div className="listing-grid" aria-hidden="true">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div className="listing-card skeleton-card" key={index}>
+                    <div className="skeleton-image" />
+                    <div className="skeleton-content">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {error && (
+            <div className="status-message error-message" role="alert">
+              <strong>Something went wrong.</strong>
+              <span>{error} Make sure the Express server is running.</span>
+            </div>
+          )}
+
+          {!isLoading && !error && listings.length === 0 && (
+            <p className="status-message">No stays match your current filters.</p>
+          )}
+
+          {!isLoading && !error && listings.length > 0 && (
+            <div className="listing-grid">
+              {listings.map((listing) => (
+                <ListingCard key={listing._id} listing={listing} />
+              ))}
+            </div>
+          )}
         </>
-      )}
-
-      {error && (
-        <div className="status-message error-message" role="alert">
-          <strong>Something went wrong.</strong>
-          <span>{error} Make sure the Express server is running.</span>
-        </div>
-      )}
-
-      {!isLoading && !error && listings.length === 0 && (
-        <p className="status-message">No stays match your current filters.</p>
-      )}
-
-      {!isLoading && !error && listings.length > 0 && (
-        <div className="listing-grid">
-          {listings.map((listing) => (
-            <ListingCard key={listing._id} listing={listing} />
-          ))}
-        </div>
       )}
     </main>
   )

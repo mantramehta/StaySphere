@@ -496,6 +496,150 @@ h1 {
   background: transparent;
 }
 
+.ai-search {
+  margin-bottom: 2.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid #ffe1e3;
+  border-radius: 1.25rem;
+  background: #fff5f5;
+}
+
+.ai-search h2 {
+  margin: 0.4rem 0 0.35rem;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.ai-search > p {
+  margin: 0 0 1.25rem;
+  color: #666;
+}
+
+.ai-search-form {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.ai-search-form input {
+  min-width: 0;
+  flex: 1;
+  padding: 0.95rem 1rem;
+  border: 1px solid #f0c9cc;
+  border-radius: 0.75rem;
+  color: #222;
+  background: #fff;
+  font: inherit;
+}
+
+.ai-search-form input:focus {
+  border-color: #fe424d;
+  outline: 2px solid #ffdadd;
+}
+
+.ai-search-form input:disabled,
+.ai-search button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.ai-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.ai-examples button {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #f0c9cc;
+  border-radius: 2rem;
+  color: #444;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ai-examples button:hover:not(:disabled) {
+  border-color: #fe424d;
+  color: #d92f3b;
+}
+
+.ai-status,
+.ai-error {
+  margin: 1rem 0 0;
+}
+
+.ai-status {
+  color: #666;
+}
+
+.ai-results .section-heading h2 {
+  margin: 0.45rem 0 0;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.ai-results .clear-button {
+  flex: 0 0 auto;
+  border: 1px solid #ddd;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ai-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -1rem 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.ai-chip {
+  padding: 0.35rem 0.75rem;
+  border-radius: 2rem;
+  color: #fff;
+  background: #222;
+}
+
+.ai-note {
+  margin: 0 0 1.5rem;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.ai-results .status-message p {
+  margin: 0.5rem 0 0;
+}
+
+.match-reasons {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.9rem 0 0;
+  padding: 0.9rem 0 0;
+  border-top: 1px solid #f0f0f0;
+  color: #555;
+  font-size: 0.85rem;
+  list-style: none;
+}
+
+.match-reasons li {
+  position: relative;
+  padding-left: 1.2rem;
+}
+
+.match-reasons li::before {
+  position: absolute;
+  left: 0;
+  color: #fe424d;
+  font-weight: 800;
+  content: "✓";
+}
+
 .category-filters {
   display: flex;
   gap: 0.6rem;
@@ -999,6 +1143,10 @@ h1 {
 
   .search-form input {
     flex-basis: 100%;
+  }
+
+  .ai-search-form {
+    flex-direction: column;
   }
 
   .listing-grid {
